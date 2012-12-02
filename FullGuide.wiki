@@ -26,7 +26,7 @@ Many aspects of splitting and coercing can be configured. Zohhak uses it's defau
 =Configuration=
 
 Processing of each zohhak's test method depends on configuration. If none is provided, the default one (`DefaultConfiguration.class`) is used. More specific configuration overrides more general one.
-Currently user can configure following parameters:
+Currently user can configure following parameters (for details check `@TestWith` javadoc):
   * parameter separator
   * string boundary
   * additional coercers
@@ -40,9 +40,21 @@ If any of them is not provided then value from more general configuration is use
 Configuration can be placed on class level:
 {{{
 @RunWith(ZohhakRunner.class)
-@Configure(coercer={Coercer1.class, Coercer2.class}, separator=";")
-//default coercers and 2 additional will be used for every test in this class
-public class TestClass
+@Configure(coercers={Coercer1.class, Coercer2.class}, separator=";")
+/* 
+ * default configuration for every test in this class:
+ * 3 coercers (the default and 2 additional ones) 
+ * colon instead of comma
+ * default string boundary
+ */
+public class TestClass {
+
+    @TestWith("...") //
+    public void test1(...
+
+}
+
+
 }}}
 
 
