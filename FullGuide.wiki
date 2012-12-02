@@ -22,6 +22,11 @@ Zohhak:
 
 Many aspects of splitting and coercing can be configured. Zohhak uses it's default configuration which can be overridden with class and method level configurations.
 
+==Configuration==
 
+Processing of each zohhak's test method depends on configuration. If none is provided, the default is used. 
+
+=Splitting parameters=
+Each invocation line will be split using separator. The default separator is comma and can be changed.
 
 More specific configuration overrides more general one (similar to css). 
