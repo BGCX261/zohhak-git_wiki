@@ -16,7 +16,7 @@ public class CoercingTest {
 
     @TestWith("c, 10, -13, 15, 1.5, 2.3, 7, true")
     public void coercingWrappers(Character c, Byte b, Short s, Integer i, Float f, Double d, Long l, Boolean bool) {
-        // will work also with primitives
+        // works also with primitives
 	assertThat(c).isEqualTo('c');
 	assertThat(b).isEqualTo((byte)10);
 	assertThat(s).isEqualTo((short)-13);
@@ -82,6 +82,5 @@ public class CoercionTest {
     public DateTime toJoda(String input) {
         ...
     }
-
 }
 }}}
