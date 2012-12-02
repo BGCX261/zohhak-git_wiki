@@ -1,4 +1,5 @@
 #summary Full user guide
+#labels Featured
 
 <wiki:toc max_depth="1" />
 
@@ -22,11 +23,28 @@ Zohhak:
 
 Many aspects of splitting and coercing can be configured. Zohhak uses it's default configuration which can be overridden with class and method level configurations.
 
-==Configuration==
+=Configuration=
 
-Processing of each zohhak's test method depends on configuration. If none is provided, the default is used. 
+Processing of each zohhak's test method depends on configuration. If none is provided, the default one (`DefaultConfiguration.class`) is used. More specific configuration overrides more general one.
+Currently user can configure following parameters:
+  * parameter separator
+  * string boundary
+  * additional coercers
+  * if coercers provided by more general should be inherited
+  * configuration that can hold all above parameters. helps keeping your tests DRY
+
+
+If any of them is not provided then value from more general configuration is used.
+
+
+Configuration can be placed on class level:
+{{{
+@RunWith(ZohhakRunner.class)
+@Configure(coercer={Coercer1.class, Coercer2.class}, separator=";")
+//default coercers and 2 additional will be used for every test in this class
+public class TestClass
+}}}
+
 
 =Splitting parameters=
 Each invocation line will be split using separator. The default separator is comma and can be changed.
-
-More specific configuration overrides more general one (similar to css). 
