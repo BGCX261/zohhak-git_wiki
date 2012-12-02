@@ -49,3 +49,29 @@ public class CoercingTest {
     }
 }
 }}}
+=User types=
+{{{
+public class CustomCoercer {
+
+    public BigDecimal whateverName(String input) {
+        return new BigDecimal(input);
+    }
+
+    public Fraction toFraction(String input) {
+        ...
+        return Fraction.getFraction(...);
+    }
+}
+}}}
+{{{
+@RunWith(ZohhakRunner.class)
+@Configure(coercer=CustomCoercer.class)
+public class CoercionTest {
+
+    @TestWith("15, 2/3")
+    public void testNumbers(BigDecimal decimal, Fraction fraction) {
+        ...
+    }
+
+}
+}}}
