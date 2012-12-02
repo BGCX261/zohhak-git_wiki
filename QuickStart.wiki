@@ -53,11 +53,11 @@ public class CoercingTest {
 {{{
 public class CustomCoercer {
 
-    public BigDecimal whateverName(String input) {
-        return new BigDecimal(input);
+    public BigDecimal whateverName(String trimmedInput) {
+        return new BigDecimal(trimmedInput);
     }
 
-    public Fraction toFraction(String input) {
+    public Fraction toFraction(String trimmedInput) {
         ...
         return Fraction.getFraction(...);
     }
@@ -68,8 +68,18 @@ public class CustomCoercer {
 @Configure(coercer=CustomCoercer.class)
 public class CoercionTest {
 
-    @TestWith("15, 2/3")
-    public void testNumbers(BigDecimal decimal, Fraction fraction) {
+    @TestWith("15, 2/3, john.doe@corpo.com, 22-09-2012")
+    public void testCoercions(BigDecimal decimal, Fraction fraction, User user, DateTime date) {
+        ...
+    }
+
+    @Coercion
+    public User whateverName(String input) {
+        ...
+    }
+
+    @Coercion
+    public DateTime toJoda(String input) {
         ...
     }
 
