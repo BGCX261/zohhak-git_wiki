@@ -62,3 +62,96 @@ public class TestClass {
 
 =Splitting parameters=
 Each invocation line will be split using separator. The default separator is comma and can be changed.
+
+=Coercing parameters=
+you can use all out-of-the-box supported types. For now it means: primitives, their wrappers, nulls, enums, strings and types assignable from them: eg. `Number`, `CharSequence`, `Object`. Below you can see complete working code:
+
+{{{
+imports...
+
+@RunWith(ZohhakRunner.class)
+public class CoercionTest {
+
+    @TestWith("ONE_OF_ENUM_VALUES, 3, null, John Doe")
+    public void coerce(SampleEnum enumValue, int intValue, WhateverType nullValue, String stringValue) {
+
+	assertThat(enumValue).isEqualTo(SampleEnum.ONE_OF_ENUM_VALUES);		
+        assertThat(intValue).isEqualTo(3);
+        assertNull(nullValue)
+        assertThat(stringValue).isEqualTo("John Doe");
+    }
+
+}
+
+}}}
+
+===and what about user types?===
+Zohhak always tries to coerce string to desired type (parameter's type). coercions are used to achieve it. By default Zohhak uses `DefaultCoercer` (a set of coercions) that support out-of-the-box transformations. If you want to use other types you have to provide additional coercions. To add support for user type `Money`, you need method that converts from `String` to `Money`. Let's say:
+
+{{{
+public Money whateverName(String input) {
+    return new Money(new BigDecimal(input));
+}
+}}}
+You don't have to care about any error handling, parse exceptions etc. If coercion fails, Zohhak will look for another matching coercion. You can also add as many coercions as you want, for any types you want. You can have many coercions for one type. They can throw any `Throwable`. 
+
+*Limitation:* you cannot make any assumptions on order in which Zohhak will look for coercions. That means coercions for the same type should have separated domains.
+
+This allows you to e.g. to handle integers in hex:
+
+{{{
+public int toIntFromHex(String hexInt) {
+    assertThat(hexInt).startsWith("0x");
+    String plainHex = hexInt.substring(2);
+    return Integer.parseInt(plainHex, 16);
+}
+}}}
+The default coercion will fail to parse sth like 0x12f so Zohhak will use above coercion. However, for decimal numbers, above coercion will fail and Zohhak use the default one.
+
+
+===how to register coercions?===
+It can be done in a few ways (depending on how often you plan to use this particular coercion). The quickest way is
+
+{{{
+@RunWith(ZohhakRunner.class)
+public class CoercionTest {
+
+    @TestWith({
+        "12.456",
+        "-3.4"
+    })
+    public void testMoney(Money money) {
+        assertThat...
+    }
+
+    @Coercion
+    public Money whateverName(String input) {
+        return new Money(new BigDecimal(input));
+    }
+}
+}}}
+Of course, you don't have to copy/paste coercions to every test class. Another way is to create a coercer. Coercer is a pojo that contains coercions
+
+{{{
+public class MyCoercer {
+
+    public Money whateverName(String input) {
+        return new Money(new BigDecimal(input));
+    }
+}
+}}}
+and then use that coercer in your tests
+{{{
+@RunWith(ZohhakRunner.class)
+@Configure(coercer=MyCoercer.class)
+public class CoercionTest {
+
+    @TestWith({
+        "12.456",
+        "-3.4"
+    })
+    public void testMoney(Money money) {
+        assertThat...
+    }
+}
+}}}
