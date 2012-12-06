@@ -61,7 +61,8 @@ public class TestClass {
 
 
 =Splitting parameters=
-Each invocation line will be split using separator. The default separator is comma and can be changed.
+Each invocation line will be split using separator. The default separator is comma. It can be changed using `separator` parameter. It's a regexp that will be surrounded with any number of white chars. For more details see `@TestWith` javadoc or 
+[https://code.google.com/p/zohhak/source/browse/src/test/java/com/googlecode/zohhak/api/SplittingTest.java SplittingTest.java] 
 
 =Coercing parameters=
 you can use all out-of-the-box supported types. For now it means: primitives, their wrappers, nulls, enums, strings and types assignable from them: eg. `Number`, `CharSequence`, `Object`. Below you can see complete working code:
