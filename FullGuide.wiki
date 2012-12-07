@@ -7,7 +7,7 @@
 
 = Introduction =
 
-Each zohhak's test method contains string parameters provided within annotation. Each of those strings represents all parameters in a single test method execution.
+Zohhak provides junit runner that allows to use test methods with parameters. Each of those methods has an array of strings provided within annotation. Each of those strings represents all parameters in a single test method execution. The following method will be executed two times.
 {{{
 @TestWith({
     "clerk,      45'000 USD, GOLD",
