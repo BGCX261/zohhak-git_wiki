@@ -14,7 +14,7 @@ Each zohhak's test method contains string parameters provided within annotation.
     "supervisor, 60'000 GBP, PLATINUM"
 })
 public void canAcceptDebit(Employee employee, Money money, ClientType clientType) {
-    ...
+    assertThat(...
 }
 }}}
 Zohhak:
