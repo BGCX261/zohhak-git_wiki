@@ -26,12 +26,30 @@ Zohhak:
 
 Many aspects of splitting and coercing can be configured. Zohhak uses it's default configuration which can be overridden with class and/or method level configurations.
 
+=Basic usage=
+First of all check [QuickStart#Out_of_the_box]
+
 =Configuration=
 
-Processing of each zohhak's test method depends on configuration. If none is provided, the default one (`DefaultConfiguration.class`) is used. More specific configuration overrides more general one.
-Currently user can configure following parameters (for details check `@TestWith` javadoc):
-  * parameter separator
-  * string boundary
+Processing of each zohhak's test method depends on configuration. Configuration can be placed on many different levels (priorities). 
+
+  # Default configuration (specified by [https://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/DefaultConfiguration.java DefaultConfiguration.java])
+  # @Configure at class level
+  # @TestWith at method level
+
+Configuration with higher priority (greater number) has precedence over configuration with lower priority. Furthermore both @TestWith and @Configure contain parameter named 'configuration'. This parameter has lower priority than any other parameters within the same annotation. This allows to reduce amount of configuration. For each test in a class, the default configuration is used unless you provide class level @Configure. If you need to configure many classes then it's easier to create your own Configuration class instead of provide same set of parameters every time. But even if you provide your own configuration you can still tune configuration for one specific class because configuration has lower priority than other parameters within annotation. Same apply to method level configuration.
+
+
+
+
+If more specific configuration is provided, it overrides more general one. Otherwise configuration is inherited.
+More specific configuration overrides more general one. 
+
+
+Currently you can configure following parameters (for details check `@TestWith` javadoc):
+|| *parameter*    || *description* || *default value* ||
+|| separator      || regexp used for splitting parameters || "," (comma) ||
+|| stringBoundary || string used for explicit string  
   * additional coercers
   * if coercers provided by more general should be inherited
   * configuration that can hold all above parameters. helps keeping your tests DRY
