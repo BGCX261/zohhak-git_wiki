@@ -15,7 +15,7 @@ import com.googlecode.zohhak.helper.*;
 public class CoercingTest {
 
     @TestWith({
-        "2, 1, 3"
+        "2, 1, 3",
         "3, 5, 8"
     })
     public void adding(int addend1, addend2, result) {
