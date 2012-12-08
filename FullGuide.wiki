@@ -53,14 +53,19 @@ public void multiCharSeparator(String string, boolean bool) {
 For more details see `@TestWith` javadoc or 
 [http://code.google.com/p/zohhak/source/browse/src/test/java/com/googlecode/zohhak/api/SplittingTest.java SplittingTest.java] 
 
-Only edge white chars are trimmed so you can place them inside your parameters. Same applies to apostrophes (string boundaries) but at most one string boundary is removed from each side of parameter. And you can always change 'stringBoundary' parameter of @TestWith annotation. 
+Only edge white chars are trimmed so you can place them inside your parameters. Same applies to apostrophes (string boundaries) but at most one string boundary is removed from each side of parameter. And you can always change 'stringBoundary' parameter of @TestWith annotation. It's not a regexp, it's a string
 {{{
-
-@TestWith(" '' abc  ")
-public void oneSideBoundary(String input) {
-    assertThat(input).isEqualTo("' abc");
+@TestWith(" '' abc  , '' ,  , friend's car ")
+public void defaultBoundary(String abc, String empty1, String empty2, String car) {
+    assertThat(abc).isEqualTo("' abc");
+    assertThat(empty1).isEqualTo(empty2).isEmpty();
+    assertThat(car).isEqualTo("friend's car");
 }
 
+@TestWith(value=" ' '  ", stringBoundary="")
+public void noBoundary(String input) {
+    assertThat(input).isEqualTo("' '");
+}
 }}}
 For more details check @TestWith javadoc and [http://code.google.com/p/zohhak/source/browse/src/test/java/com/googlecode/zohhak/api/ParsingTest.java ParsingTest.java] 
 
