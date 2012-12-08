@@ -27,7 +27,43 @@ Zohhak:
 Many aspects of splitting and coercing can be configured. Zohhak uses it's default configuration which can be overridden with class and/or method level configurations.
 
 =Basic usage=
-First of all check [QuickStart#Out_of_the_box]
+First of all check [QuickStart#Out_of_the_box 'Out of the box' in quick start section]. Zohhak by default supports:
+  * primitives and their wrappers
+  * nulls
+  * enums
+  * strings
+and types assignable from them (eg. Number, CharSequence, Object). Parameters are separated with comma, edge white characters are trimmed (unless apostrophes are used).
+
+==Commas, white chars and apostrophes==
+@TestWith contains parameter 'separator'. it's a regexp used to splitting parameters. The default value is "," (a comma) but can be changed 
+{{{
+@TestWith(value="7 | 19, 23", separator="[\\|,]")
+public void mixedSeparators(int i, int j, int k) {
+    assertThat(i).isEqualTo(7);
+    assertThat(j).isEqualTo(19);
+    assertThat(k).isEqualTo(23);
+}
+	
+@TestWith(value=" 7 = 7 > 5 => true", separator="=>")
+public void multiCharSeparator(String string, boolean bool) {
+    assertThat(string).isEqualTo("7 = 7 > 5");
+    assertThat(bool).isTrue();
+}
+}}}
+For more details see `@TestWith` javadoc or 
+[http://code.google.com/p/zohhak/source/browse/src/test/java/com/googlecode/zohhak/api/SplittingTest.java SplittingTest.java] 
+
+Only edge white chars are trimmed so you can place them inside your parameters. Same applies to apostrophes (string boundaries) but at most one string boundary is removed from each side of parameter. And you can always change 'stringBoundary' parameter of @TestWith annotation. 
+{{{
+
+@TestWith(" '' abc  ")
+public void oneSideBoundary(String input) {
+    assertThat(input).isEqualTo("' abc");
+}
+
+}}}
+For more details check @TestWith javadoc and [http://code.google.com/p/zohhak/source/browse/src/test/java/com/googlecode/zohhak/api/ParsingTest.java ParsingTest.java] 
+
 
 =Configuration=
 
@@ -77,22 +113,6 @@ public class TestClass {
 
 
 }}}
-
-
-=Splitting parameters=
-Each invocation line will be split using separator. The default separator is comma. It can be changed using `separator` parameter. It's a regexp that will be surrounded with any number of white chars. 
-{{{
-@TestWith(value="7 | 19, 23", separator="[\\|,]")
-public void mixedSeparators(int i, int j, int k) {
-   ...
-}
-@TestWith(value="7 ; 19; 23", separator=";")
-public void simpleSeparator(int i, int j, int k) {
-   ...
-}
-}}}
-For more details see `@TestWith` javadoc or 
-[https://code.google.com/p/zohhak/source/browse/src/test/java/com/googlecode/zohhak/api/SplittingTest.java SplittingTest.java] 
 
 =Coercing parameters=
 you can use all out-of-the-box supported types. For now it means: primitives, their wrappers, nulls, enums, strings and types assignable from them: eg. `Number`, `CharSequence`, `Object`. Below you can see complete working code:
