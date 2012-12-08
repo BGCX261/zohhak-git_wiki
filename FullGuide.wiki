@@ -27,7 +27,7 @@ Zohhak:
 Many aspects of splitting and coercing can be configured. Zohhak uses it's default configuration which can be overridden with class and/or method level configurations.
 
 =Basic usage=
-First of all check [QuickStart#Out_of_the_box 'Out of the box' in quick start section]. Zohhak by default supports:
+First of all check [QuickStart#Out_of_the_box Out of the box] section in quick start. Zohhak by default supports:
   * primitives and their wrappers
   * nulls
   * enums
