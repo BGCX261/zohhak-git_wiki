@@ -102,13 +102,15 @@ public void notNullTest(String notNull) {
 }
 }}}
 =User types=
-Zohhak always tries to coerce provided string to desired type (parameter's type). Coercions are used to achieve it. Coercion is a method that converts one object of one type to an object of another type. For convenience coercions may be grouped in coercer (pojo). By default Zohhak uses `DefaultCoercer` that provides out-of-the-box coercions. If you want to use other types you have to provide additional coercions. To add support for user type `Money`, all you need is:
+Zohhak always tries to coerce provided string to desired type (parameter's type). Coercions are used to achieve it. Coercion is a method that converts one object of one type to an object of another type. For convenience coercions may be grouped in coercer (pojo). By default Zohhak uses [http://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/DefaultCoercer.java DefaultCoercer] that provides out-of-the-box coercions. If you want to use other types you have to provide additional coercions. To add support for user type `Money`, all you need is:
 {{{
 public Money whateverName(String input) {
     return new Money(new BigDecimal(input));
 }
 }}}
 You don't have to care about any error handling, parse exceptions etc. If coercion fails, Zohhak will look for another matching coercion. You can also add as many coercions as you want, for any types you want. You can have many coercions for one type. They can throw any `Throwable`. 
+
+*Limitation:* coercions and coercers must be stateless. You can't make any assumptions on how many coercer instances will be created, how many threads will be executing the same coercion at the same time. it's an implementation detail.
 
 ==Multiple coercions for a single type==
 
@@ -128,10 +130,10 @@ public int toIntFromHex(String hexInt) {
     return Integer.parseInt(plainHex, 16);
 }
 }}}
+pff, easy. but where to place that code?
 
-
-===how to register coercions?===
-It can be done in a few ways (depending on how often you plan to use this particular coercion). The quickest way is
+==Registering coercions==
+To make zohhak uses your coercions, you have to register them. It can be done in a few ways (depending on how often you plan to use this particular coercion). The quickest way is to place coercion inside a test class and mark it as `@Coercion`
 
 {{{
 @RunWith(ZohhakRunner.class)
@@ -141,7 +143,7 @@ public class CoercionTest {
         "12.456",
         "-3.4"
     })
-    public void testMoney(Money money) {
+    public void testMethod(Money money) {
         assertThat...
     }
 
@@ -151,8 +153,7 @@ public class CoercionTest {
     }
 }
 }}}
-Of course, you don't have to copy/paste coercions to every test class. Another way is to create a coercer. Coercer is a pojo that contains coercions
-
+Of course, you don't have to copy/paste coercions to every test class. Another way is to create a coercer.
 {{{
 public class MyCoercer {
 
@@ -161,13 +162,12 @@ public class MyCoercer {
     }
 }
 }}}
-and then use that coercer in your tests
+You can have many coercions inside one coercer. Such coercer can be used in your tests
 {{{
 @RunWith(ZohhakRunner.class)
-@Configure(coercer=MyCoercer.class)
 public class CoercionTest {
 
-    @TestWith({
+    @TestWith(coercers=MyCoercer.class, value={
         "12.456",
         "-3.4"
     })
@@ -177,7 +177,7 @@ public class CoercionTest {
 }
 }}}
 
-=Configuration=
+=DRYing configuration=
 
 Processing of each zohhak's test method depends on configuration. Configuration can be placed on many different levels (priorities). 
 
