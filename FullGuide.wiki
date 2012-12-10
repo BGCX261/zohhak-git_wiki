@@ -29,12 +29,12 @@ Many aspects of splitting and coercing can be configured. Zohhak uses it's defau
 =Basic usage=
 First of all check [QuickStart#Out_of_the_box Out of the box] section in quick start. Zohhak by default supports:
   * primitives and their wrappers
-  * nulls
+  * null
   * enums
   * strings
 and types assignable from them (eg. Number, CharSequence, Object). Parameters are separated with comma, edge white characters are trimmed (unless apostrophes are used).
 
-==Commas, white chars and apostrophes==
+==Commas, white chars, apostrophes==
 @TestWith contains parameter 'separator'. it's a regexp used to splitting parameters. The default value is "," (a comma) but can be changed 
 {{{
 @TestWith(value="7 | 19, 23", separator="[\\|,]")
@@ -68,6 +68,21 @@ public void noBoundary(String input) {
 }
 }}}
 For more details check @TestWith javadoc and [http://code.google.com/p/zohhak/source/browse/src/test/java/com/googlecode/zohhak/api/ParsingTest.java ParsingTest.java] 
+
+==null==
+"null" (case insensitive) is converted to null of any type. currently there is no possibility to change pattern recognized as null;
+{{{
+@TestWith({"null, NULL",
+           "Null, nuLL"})
+public void nullTest(WhateverType firstNull, AnotherType secondNull) {
+    assertThat(firstNull).isEqualTo(secondNull).isNull();
+}
+
+@TestWith(" 'null' ") // does not work in 1.0.0-beta1
+public void notNullTest(String notNull) {
+    assertThat(notNull).isEqualTo("null");
+}
+}}}
 
 
 =Configuration=
