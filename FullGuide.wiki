@@ -187,25 +187,93 @@ public class CoercionTest {
 
 Placing all the configuration in every `@TestWith` makes your tests less readable and forces you to copy/paste the code. Let's get rid of it.
 
-Processing of each zohhak's test method depends on configuration. Configuration can be placed on many different levels (priorities). 
+==Basic cascading==
+
+Processing of each zohhak's test method depends on configuration. Configuration can be placed on many different levels. 
 
   # Default configuration (specified by [https://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/DefaultConfiguration.java DefaultConfiguration.java])
-  # @Configure at class level
-  # @TestWith at method level
+  # `@Configure` at class level
+  # `@TestWith` at method level
 
-Configuration with higher priority (greater number) has precedence over configuration with lower priority. Furthermore both @TestWith and @Configure contain parameter named 'configuration'. This parameter has lower priority than any other parameters within the same annotation. This allows to reduce amount of configuration. For each test in a class, the default configuration is used unless you provide class level @Configure. If you need to configure many classes then it's easier to create your own Configuration class instead of provide same set of parameters every time. But even if you provide your own configuration you can still tune configuration for one specific class because configuration has lower priority than other parameters within annotation. Same apply to method level configuration.
+Configuration with higher priority (greater number) has precedence over configuration with lower priority. Furthermore both `@TestWith` and `@Configure` contain parameter named 'configuration'. This parameter has lower priority than any other parameters within the same annotation. This allows to reduce amount of configuration. For each test in a class, the default configuration is used unless you provide class level @Configure. If you need to configure many classes then it's easier to create your own Configuration class instead of provide same set of parameters every time. But even if you provide your own configuration you can still tune configuration for one specific class because configuration has lower priority than other parameters within annotation. Same apply to method level configuration. To complicated? Let's see examples:
+{{{
+@RunWith(ZohhakRunner.class)
+public class TestClass {
+
+    @TestWith("1, 2")                 
+    public void method1(int i, int j) {}
+
+    @TestWith("1; 2", separator=";") 
+    public void method2(int i, int k) {}
+}
+}}}
+{{{
+@RunWith(ZohhakRunner.class)
+@Configure(separator=";")            // changing class separator
+public class TestClass {
+
+    @TestWith("1; 2")                   
+    public void method1(int i, int j) {}
+
+    @TestWith("1, 2", separator=",")    
+    public void method2(int i, int k) {}
+}
+}}}
+`stringBoundary` works exactly the same way. Coercers configuration will be discussed later. Now let's see configuration in action.
+{{{
+public class SemicolonConfiguration extends DefaultConfiguration {
+
+    @Override
+    public String separator() {
+        return ";";
+    }
+}
+}}}
+{{{
+@RunWith(ZohhakRunner.class)
+@Configure(separator="\\|")
+public class TestClass {
+
+    @TestWith("1 | 2")                   
+    public void method1(int i, int j) {}
 
 
+    @TestWith("1; 2", configuration=SemicolonConfiguration.class)
+    public void method2(int i, int j) {}
+
+    @TestWith(separator=",", configuration=SemicolonConfiguration.class,
+              "1, 2"
+    )
+    public void method3(int i, int k) {}
+}
+}}}
+and the most concise form:
+{{{
+@RunWith(ZohhakRunner.class)
+@Configure(configuration=SemicolonConfiguration.class)
+public class TestClass {
+
+    @TestWith("1 ; 2")                   
+    public void method1(int i, int j) {}
 
 
-If more specific configuration is provided, it overrides more general one. Otherwise configuration is inherited.
-More specific configuration overrides more general one. 
+    @TestWith("1, 2", separator=",")
+    public void method2(int i, int j) {}
 
+    @TestWith("1, 2", configuration=CommaConfiguration.class)
+    public void method3(int i, int k) {}
+}
+}}}
+
+==Coercers cascading==
+
+As you see above, `separator`, `stringBoundary` and `configuration` are inherited or overridden with new values.
 
 Currently you can configure following parameters (for details check `@TestWith` javadoc):
 || *parameter*    || *description* || *default value* ||
 || separator      || regexp used for splitting parameters || "," (comma) ||
-|| stringBoundary || string used for explicit string  
+|| stringBoundary || string used for explicit string  ||  ||
+
   * additional coercers
   * if coercers provided by more general should be inherited
   * configuration that can hold all above parameters. helps keeping your tests DRY
