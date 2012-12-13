@@ -237,17 +237,14 @@ public class TestClass {
     @TestWith("1 | 2")                   
     public void method1(int i, int j) {}
 
-
     @TestWith("1; 2", configuration=SemicolonConfiguration.class)
     public void method2(int i, int j) {}
 
-    @TestWith(separator=",", configuration=SemicolonConfiguration.class,
-              "1, 2"
-    )
+    @TestWith("1, 2", separator=",", configuration=SemicolonConfiguration.class)
     public void method3(int i, int k) {}
 }
 }}}
-and the most concise form:
+and the most concise (for current zohhak's version) form:
 {{{
 @RunWith(ZohhakRunner.class)
 @Configure(configuration=SemicolonConfiguration.class)
@@ -255,7 +252,6 @@ public class TestClass {
 
     @TestWith("1 ; 2")                   
     public void method1(int i, int j) {}
-
 
     @TestWith("1, 2", separator=",")
     public void method2(int i, int j) {}
@@ -267,37 +263,60 @@ public class TestClass {
 
 ==Coercers cascading==
 
-As you see above, `separator`, `stringBoundary` and `configuration` are inherited or overridden with new values.
-
-Currently you can configure following parameters (for details check `@TestWith` javadoc):
-|| *parameter*    || *description* || *default value* ||
-|| separator      || regexp used for splitting parameters || "," (comma) ||
-|| stringBoundary || string used for explicit string  ||  ||
-
-  * additional coercers
-  * if coercers provided by more general should be inherited
-  * configuration that can hold all above parameters. helps keeping your tests DRY
-
-
-If any of them is not provided then value from more general configuration is used.
-
-
-Configuration can be placed on class level:
+As you see above, `separator`, `stringBoundary` and `configuration` are inherited or overridden with new values. There is another parameter `coercers` that lets you provide a list of coercers. However those coercers will not override coercers defined before. They will be added to the inherited coercers. You can think of it as registering additional coercers.
 {{{
 @RunWith(ZohhakRunner.class)
-@Configure(coercers={Coercer1.class, Coercer2.class}, separator=";")
-/* 
- * default configuration for every test in this class:
- * 3 coercers (the default and 2 additional ones) 
- * colon instead of comma
- * default string boundary
- */
+@Configure(coercers={Coercer1.class, Coercer2.class})
 public class TestClass {
 
-    @TestWith("...") //
-    public void test1(...
+    @TestWith("1, 2")
+    public void passMethod1(TypeFromCoercer1 param1, TypeFromCoercer2 param2)
 
+    @TestWith("1, 2, 3", configuration=ConfigurationWithCoercer3)
+    public void passMethod2(TypeFromCoercer1 param1, TypeFromCoercer2 param2, TypeFromCoercer3 param3) {}
+
+    @TestWith("1, 2, 3", coercers=ConfigurationWithCoercer3)
+    public void passMethod3(TypeFromCoercer1 param1, TypeFromCoercer2 param2, TypeFromCoercer3 param3) {}
+
+    @TestWith("1")
+    public void passMethod4(int i) {}
 }
-
-
 }}}
+If you really need, you can to override (or deregister) inherited coercers. Just use `inheritCoercers=false`. What is also important `inheritCoercers` is not inherited itself. It's always `true` unless explicitly stated otherwise. You can think of it as deregistering inherited coercers.
+{{{
+@RunWith(ZohhakRunner.class)
+@Configure(coercers=Coercer1.class, inheritCoercers=false)   //reject default coercers
+public class TestClass {
+
+    @TestWith("1")
+    public void passMethod1(TypeFromCoercer1 param1)
+
+    @TestWith("1", inheritCoercers=false)                    // reject Coercer1. so this will fail
+    public void failMethod1(TypeFromCoercer1 param1) {}    
+
+    @TestWith("1")
+    public void failMethod2(int i) {}                        // this will fail because default coercers are rejects
+}
+}}}
+You cannot deregister in-test coercions
+{{{
+@RunWith(ZohhakRunner.class)
+public class TestClass {
+ 
+    @TestWith("1", inheritCoercers=false)                    // this will pass
+    public void passMethod(CustomType param) {}
+
+    @Coercion
+    public CustomType toCustomType(String input) {...}
+}
+}}}
+==Summary==
+Both `@TestWith` and `@Configure` have the following set of configuration parameters (for details check `@TestWith` javadoc):
+|| *parameter*     || *description*                        || *default value* || *is inherited* ||
+|| separator       || regexp (string) used for splitting parameters || "," (comma) || yes ||
+|| stringBoundary  || string used for explicit string        || "'" (apostrophe) || yes ||
+|| coercers        || array of additional coercers (classes)                             || { } (empty array) || yes ||
+|| inheritCoercers || boolean indicates if inherited coercers should also be used or not || true || no ||
+|| configuration   || <span>class (that implements [https://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/Configuration.java Configuration]) that stores all above parameters.<br/> Has lower priority than parameters provided explicitly </span> || [https://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/Inherit.java Inherit.java] || true ||
+
+=Creating configuration=
