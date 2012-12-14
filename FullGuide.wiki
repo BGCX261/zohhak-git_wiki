@@ -311,7 +311,8 @@ public class TestClass {
 When you write your own `Configuration` class, you don't have to set explicitly all the parameters. You can mark them as 'inherited'. In such case, marked parameters will not be changed by your configuration. All you have to do is simply set the parameter of your configuration to the special value. For details see [https://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/Inherit.java Inherit.java], configuration that inherits everything (may be helpful when writing your own configurations).
 ==Summary==
 Both `@TestWith` and `@Configure` have the following set of configuration parameters (for details check [http://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/TestWith.java @TestWith] javadoc):
-|| *parameter*     || *description*                        || * DefaultConfiguration value* || *`@TestWith`/`@Configure` value* || *is inherited* ||
+
+|| *parameter*     || *description*                        || * `DefaultConfiguration` value* || *`@TestWith`/`@Configure` value* || *is inherited* ||
 || separator       || regexp (string) used for splitting parameters || "," (comma) || [https://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/ConfigurationDefinition.java ConfigurationDefinition].INHERIT || yes ||
 || stringBoundary  || string used for explicit string        || "'" (apostrophe) || [https://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/ConfigurationDefinition.java ConfigurationDefinition].INHERIT || yes ||
 || coercers        || array of additional coercers (classes)                             || { [http://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/DefaultCoercer.java DefaultCoercer.class] } || { } (empty array) || yes ||
