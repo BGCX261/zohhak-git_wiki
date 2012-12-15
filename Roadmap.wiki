@@ -5,3 +5,5 @@ There is no official roadmap. It all depends on community's feedback. The most l
  * add a lot of default coercions (classes, big decimals, dates, yoda etc.)
  * add 'transitive' coercions. it would be nice to allow to write coercion to joda from date, not only from string
  * add 'partial' coercion. It would be nice to allow to write sth like <2.3, 3.5i> and then write coercion to complex number from two doubles instead of from one string. But this one is just an idea, i still have no clear concept for it
+
+If you have other ideas, share them.
