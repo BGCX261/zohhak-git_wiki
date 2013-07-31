@@ -57,7 +57,7 @@ public class CoercingTest {
     }
 }
 }}}
-=User types=
+=Custom types=
 To register other types, coercions and/or coercers can be used.
 {{{
 public class CustomCoercer {
