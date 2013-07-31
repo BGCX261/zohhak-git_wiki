@@ -93,12 +93,12 @@ public void nullTest(WhateverType firstNull, AnotherType secondNull) {
     assertThat(firstNull).isEqualTo(secondNull).isNull();
 }
 
-@TestWith(" 'null' ") // does not work in 1.0.0-beta1
+@TestWith(" 'null' ")
 public void notNullTest(String notNull) {
     assertThat(notNull).isEqualTo("null");
 }
 }}}
-=User types=
+=Custom types=
 Zohhak always tries to coerce provided string to desired type (parameter's type). Coercions are used to achieve it. Coercion is a method that converts one object of one type to an object of another type. For convenience coercions may be grouped in coercer (pojo). By default Zohhak uses [http://code.google.com/p/zohhak/source/browse/src/main/java/com/googlecode/zohhak/api/DefaultCoercer.java DefaultCoercer] that provides out-of-the-box coercions. If you want to use other types you have to provide additional coercions. To add support for user type `Money`, all you need is:
 {{{
 public Money whateverName(String input) {
