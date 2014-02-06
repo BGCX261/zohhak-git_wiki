@@ -1,11 +1,30 @@
 #summary Quick start guide
 #labels Featured
+=Hello world==
+{{{
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.runner.RunWith;
+import com.googlecode.zohhak.api.TestWith;
+import com.googlecode.zohhak.api.runners.ZohhakRunner;
 
+@RunWith(ZohhakRunner.class)
+public class HelloWorldTest {
+
+    @TestWith({
+        "2, 1,   3",
+        "3, 5,   8"
+    })
+    public void should_add_numbers(int addend1, int addend2, int result) {
+		
+        assertThat(addend1 + addend2).isEqualTo(result);
+    }
+}
+}}}
 =Out of the box=
 {{{
 package com.googlecode.zohhak.api;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.runner.RunWith;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
@@ -14,16 +33,9 @@ import com.googlecode.zohhak.helper.*;
 @RunWith(ZohhakRunner.class)
 public class CoercingTest {
 
-    @TestWith({
-        "2, 1, 3",
-        "3, 5, 8"
-    })
-    public void adding(int addend1, addend2, result) {
-        assertThat(addend1 + addend2).isEqualTo(result);
-    }
-
     @TestWith("c, 10, -13, 15, 1.5, 2.3, 7, true")
-    public void coercingWrappers(Character c, Byte b, Short s, Integer i, Float f, Double d, Long l, Boolean bool) {
+    public void should_coerce_wrappers(Character c, Byte b, Short s, Integer i,
+                                       Float f, Double d, Long l, Boolean bool) {
         // works also with primitives
 	assertThat(c).isEqualTo('c');
 	assertThat(b).isEqualTo((byte)10);
@@ -36,23 +48,23 @@ public class CoercingTest {
     }
 
     @TestWith("ONE_OF_ENUM_VALUES")
-    public void coerceEnum(SampleEnum param) {
+    public void should_coerce_enum(SampleEnum param) {
 	assertThat(param).isEqualTo(SampleEnum.ONE_OF_ENUM_VALUES);		
     }
 
     @TestWith("null")
-    public void coerceNull(WhateverType whateverType) {
+    public void should_coerce_null(WhateverType whateverType) {
 	assertThat(whateverType).isNull();
     }
 
     @TestWith(" john doe , ' john doe ' ")
-    public void coerceString(String trimmed, String untrimmed) {
+    public void should_coerce_string(String trimmed, String untrimmed) {
         assertThat(trimmed).isEqualTo("john doe");
         assertThat(untrimmed).isEqualTo(" john doe ");
     }
 
     @Test
-    public void regularJunitTest() {
+    public void should_run_standard_junit_test() {
         //this will also work
     }
 }
