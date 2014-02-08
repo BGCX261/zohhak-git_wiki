@@ -63,7 +63,7 @@ public class CoercingTest {
 }
 }}}
 =Custom types=
-You are not limited to built-in transformations:
+What if you want other type in your tests? Let's say the `Locale`.
 {{{
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Locale;
@@ -85,7 +85,7 @@ public class UserCoercionTest {
     }
 }
 }}}
-You can also change the default transformations:
+You can also change the 'out-of-the-box' behavior. Let's say we want to provide `int` not only as a decimal but also as a hex.
 {{{
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.runner.RunWith;
