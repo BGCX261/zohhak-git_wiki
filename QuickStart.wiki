@@ -22,6 +22,7 @@ public class HelloWorldTest {
 }}}
 This will run two tests: `should_add_numbers(2, 1, 3)` and `should_add_numbers(3, 5, 8)`. Each execution will be reported as an independent test.
 =Out of the box=
+Some types are supported by default: primitives, wrappers, enums etc.
 {{{
 @RunWith(ZohhakRunner.class)
 public class CoercingTest {
