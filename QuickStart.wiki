@@ -70,7 +70,7 @@ public class CoercingTest {
 }
 }}}
 =Custom types=
-You are not limited to built in transformations:
+You are not limited to built-in transformations:
 {{{
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Locale;
