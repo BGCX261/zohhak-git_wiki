@@ -70,38 +70,51 @@ public class CoercingTest {
 }
 }}}
 =Custom types=
-To register other types, coercions and/or coercers can be used.
+You are not limited to built in transformations:
 {{{
-public class CustomCoercer {
+import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Locale;
+import org.junit.runner.RunWith;
+import com.googlecode.zohhak.api.runners.ZohhakRunner;
 
-    public BigDecimal whateverName(String trimmedInput) {
-        return new BigDecimal(trimmedInput);
-    }
-
-    public Fraction toFraction(String trimmedInput) {
-        ...
-        return Fraction.getFraction(...);
-    }
-}
-}}}
-{{{
 @RunWith(ZohhakRunner.class)
-@Configure(coercer=CustomCoercer.class)
-public class CoercionTest {
+public class UserCoercionTest {	
 
-    @TestWith("15, 2/3, john.doe@corpo.com, 22-09-2012")
-    public void testCoercions(BigDecimal decimal, Fraction fraction, User user, DateTime date) {
-        ...
-    }
-
-    @Coercion
-    public User whateverName(String input) {
-        ...
-    }
-
-    @Coercion
-    public DateTime toJoda(String input) {
-        ...
-    }
+	@TestWith("EN")
+	public void should_coerce_locale(Locale locale) {
+		
+		assertThat(locale).isEqualTo(Locale.ENGLISH);
+	}
+	
+	@Coercion
+	public Locale toLocale(String language) {
+		return new Locale(language);
+	}
 }
 }}}
+You can also change the default transformations:
+{{{
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.runner.RunWith;
+import com.googlecode.zohhak.api.runners.ZohhakRunner;
+
+@RunWith(ZohhakRunner.class)
+public class UserCoercionTest {
+
+	
+	@TestWith("0xFF, 19")
+	public void should_coerce_hex_and_decimal(int hex, int decimal) {
+		
+		assertThat(hex).isEqualTo(255);
+		assertThat(decimal).isEqualTo(19);
+	}
+
+	@Coercion
+	public int toIntFromHex(String hexInt) {
+		assertThat(hexInt).startsWith("0x");
+		String plainHex = hexInt.substring(2);
+		return Integer.parseInt(plainHex, 16);
+	}
+}
+}}}
+and many, many more. See the [FullGuide].
