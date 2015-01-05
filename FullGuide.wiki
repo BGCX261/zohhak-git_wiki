@@ -4,7 +4,7 @@
 <wiki:toc max_depth="2" />
 
 = Introduction =
-_This tutorial uses [https://github.com/alexruiz/fest-assert-2.x/wiki/One-minute-starting-guide Fest assert 2.0]_
+_This tutorial uses [http://joel-costigliola.github.io/assertj AssertJ]_
 
 Zohhak provides junit runner that allows you to create test methods with parameters. Each of those methods has an array of strings provided within annotation. Each of those strings represents all parameters in a single test method execution. The following method will be executed two times.
 {{{
