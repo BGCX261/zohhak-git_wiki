@@ -45,9 +45,10 @@ Zohhak by default supports:
   * primitives and their wrappers
   * nulls
   * enums
-  * strings
+  * String
+  * !BigInteger, !BigDecimal (since 1.1.0)
 
-and types assignable from them (eg. Number, CharSequence, Object). Parameters are separated with comma, edge white characters are trimmed (unless apostrophes are used).
+and types assignable from them (eg. Number, !CharSequence, Object). Parameters are separated with comma, edge white characters are trimmed (unless apostrophes are used).
 
 ==Commas, white chars, apostrophes==
 `@TestWith` contains parameter 'separator'. it's a regexp used to splitting parameters. The default value is "," (a comma) but can be changed 
