@@ -6,4 +6,4 @@
 
   * *issues:* https://github.com/piotrturski/zohhak/issues
 
-  * *site & wiki:* will stay on googlecode for a while
+  * *site & wiki:* will stay here for a while
