@@ -293,7 +293,7 @@ public class TestClass {
     public void failMethod1(TypeFromCoercer1 param1) {}    
 
     @TestWith("1")
-    public void failMethod2(int i) {}                        // this will fail because default coercers are rejects
+    public void failMethod2(int i) {}                        // this will fail because default coercers are rejected
 }
 }}}
 You cannot deregister in-test coercions
