@@ -71,8 +71,13 @@ For more details see [https://github.com/piotrturski/zohhak/blob/master/src/main
 
 Only edge white chars are trimmed so you can place them inside your parameters. Same applies to apostrophes (string boundaries) but at most one string boundary is removed from each side of parameter. And you can always change 'stringBoundary' parameter of `@TestWith` annotation. It's not a regexp, it's a string
 {{{
+@TestWith(" ' abc' ")
+public void defaultBoundaryBasics(String abc) {
+    assertThat(abc).isEqualTo(" abc");
+}
+
 @TestWith(" '' abc  , '' ,  , friend's car ")
-public void defaultBoundary(String abc, String empty1, String empty2, String car) {
+public void defaultBoundaryAdvanced(String abc, String empty1, String empty2, String car) {
     assertThat(abc).isEqualTo("' abc");
     assertThat(empty1).isEqualTo(empty2).isEmpty();
     assertThat(car).isEqualTo("friend's car");
